@@ -6,7 +6,12 @@ type Display struct {
 	pixel [emuconfig.DISPLAY_WIDTH][emuconfig.DISPLAY_HEIGHT]pixel
 }
 
-func NewDisplay() *Display {
+type IDisplay interface {
+	Clear()
+	TogglePixel(x, y int)
+}
+
+func NewDisplay() IDisplay {
 	d := &Display{}
 	return d
 }

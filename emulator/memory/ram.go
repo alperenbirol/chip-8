@@ -2,11 +2,25 @@ package memory
 
 import "github.com/alperenbirol/chip-8/emuconfig"
 
+type Address uint16
+
+type ram [emuconfig.RAM_SIZE]byte
 type Memory struct {
-	ram emuconfig.Ram
+	ram
 }
 
-func (m *Memory) loadAtAddress(address uint16, data []byte) {
+type IMemory interface {
+	LoadROM(rom []byte)
+	LoadFonts(fonts []byte)
+	FetchInstruction(address Address) [2]byte
+	UnloadROM()
+}
+
+func NewMemory() IMemory {
+	return &Memory{}
+}
+
+func (m *Memory) loadAtAddress(address Address, data []byte) {
 	copy(m.ram[address:], data)
 }
 
@@ -22,4 +36,10 @@ func (m *Memory) LoadROM(rom []byte) {
 
 func (m *Memory) LoadFonts(fonts []byte) {
 	m.loadAtAddress(0x50, fonts)
+}
+
+func (m *Memory) FetchInstruction(address Address) [2]byte {
+	return [2]byte{
+		m.ram[address], m.ram[address+1],
+	}
 }

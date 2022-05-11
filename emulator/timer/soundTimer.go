@@ -7,8 +7,13 @@ type soundTimer struct {
 	beeper.IBeeper
 }
 
-func NewSoundTimer(beeper beeper.IBeeper) soundTimer {
-	return soundTimer{
+type ISoundTimer interface {
+	SetTimer(d byte)
+	Tick()
+}
+
+func NewSoundTimer(beeper beeper.IBeeper) ISoundTimer {
+	return &soundTimer{
 		timer:   0x00,
 		IBeeper: beeper,
 	}
