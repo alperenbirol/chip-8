@@ -12,7 +12,12 @@ type beeper struct {
 	beeperCtrl *beep.Ctrl
 }
 
-func NewBeeper() (*beeper, error) {
+type IBeeper interface {
+	Play()
+	Stop()
+}
+
+func NewBeeper() (IBeeper, error) {
 	err := speaker.Init(emuconfig.BEEPER_SAMPLE_RATE, emuconfig.BEEPER_BUFFER_SIZE)
 	if err != nil {
 		return nil, err
