@@ -4,8 +4,13 @@ type delayTimer struct {
 	timer
 }
 
-func NewDelayTimer() delayTimer {
-	return delayTimer{
+type IDelayTimer interface {
+	SetTimer(d byte)
+	Tick()
+}
+
+func NewDelayTimer() IDelayTimer {
+	return &delayTimer{
 		timer: 0x00,
 	}
 }
