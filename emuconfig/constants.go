@@ -2,6 +2,9 @@ package emuconfig
 
 const (
 	RAM_SIZE = 4096
+
+	DISPLAY_WIDTH  = 64
+	DISPLAY_HEIGHT = 32
 )
 
 var (
