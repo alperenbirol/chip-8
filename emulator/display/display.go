@@ -6,14 +6,27 @@ type Display struct {
 	pixel [emuconfig.DISPLAY_WIDTH][emuconfig.DISPLAY_HEIGHT]pixel
 }
 
-func (d *Display) SetPixel(x, y int, value pixel) {
+func NewDisplay() *Display {
+	d := &Display{}
+	return d
+}
+
+func (d *Display) setPixel(x, y int, value pixel) {
 	d.pixel[x][y] = value
+}
+
+func (d *Display) getPixel(x, y int) pixel {
+	return d.pixel[x][y]
 }
 
 func (d *Display) Clear() {
 	for x := 0; x < emuconfig.DISPLAY_WIDTH; x++ {
 		for y := 0; y < emuconfig.DISPLAY_HEIGHT; y++ {
-			d.SetPixel(x, y, PIXEL_OFF)
+			d.setPixel(x, y, PIXEL_OFF)
 		}
 	}
+}
+
+func (d *Display) TogglePixel(x, y int) {
+	d.setPixel(x, y, !d.getPixel(x, y))
 }
