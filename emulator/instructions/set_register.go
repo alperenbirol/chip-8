@@ -1,0 +1,12 @@
+package instructions
+
+import (
+	"github.com/alperenbirol/chip-8/emulator/programregister"
+	"github.com/alperenbirol/chip-8/emulator/vm"
+)
+
+func SetRegister(registerIndex byte, value byte) Instruction {
+	return func(vm *vm.VirtualMachine) {
+		vm.Registers[registerIndex] = programregister.ProgramRegister(value)
+	}
+}

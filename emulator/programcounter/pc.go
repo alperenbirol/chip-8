@@ -9,6 +9,7 @@ type pc memory.Address
 type IProgramCounter interface {
 	NextInstruction()
 	Reset()
+	Decrement()
 	SetToAddress(address memory.Address)
 }
 
@@ -19,6 +20,10 @@ func NewProgramCounter() IProgramCounter {
 
 func (p *pc) NextInstruction() {
 	*p += 2
+}
+
+func (p *pc) Decrement() {
+	*p -= 2
 }
 
 func (p *pc) Reset() {
