@@ -4,8 +4,8 @@ import (
 	"github.com/alperenbirol/chip-8/emulator/vm"
 )
 
-func SetRegister(registerIndex byte, value byte) Instruction {
+func AddToRegister(registerIndex byte, value byte) Instruction {
 	return func(vm *vm.VirtualMachine) {
-		vm.Registers[registerIndex].Set(value)
+		vm.Registers[registerIndex].Add(value)
 	}
 }
