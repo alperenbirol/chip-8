@@ -1,6 +1,11 @@
 package timer
 
-import "github.com/alperenbirol/chip-8/emulator/beeper"
+import (
+	"time"
+
+	"github.com/alperenbirol/chip-8/emuconfig"
+	"github.com/alperenbirol/chip-8/emulator/beeper"
+)
 
 type soundTimer struct {
 	timer
@@ -13,21 +18,32 @@ type ISoundTimer interface {
 }
 
 func NewSoundTimer(beeper beeper.IBeeper) ISoundTimer {
-	return &soundTimer{
-		timer:   0x00,
+	soundTimer := &soundTimer{
+		timer: timer{
+			remainingTime: 0x00,
+			ticker:        time.NewTicker(emuconfig.TIMER_INTERVAL),
+		},
 		IBeeper: beeper,
 	}
+
+	go soundTimer.Tick()
+
+	return soundTimer
+}
+
+func (t *soundTimer) SetTimer(d byte) {
+	t.remainingTime = d
+	t.Play()
 }
 
 func (t *soundTimer) Tick() {
-	go func(t *soundTimer) {
-		for {
-			if t.timer > 0 {
-				t.decrease()
-				t.Play()
-			} else {
-				t.Stop()
-			}
+	for {
+		<-t.ticker.C
+		if t.remainingTime > 0 {
+			t.decrease()
 		}
-	}(t)
+		if t.remainingTime == 0 {
+			t.Stop()
+		}
+	}
 }

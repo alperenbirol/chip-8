@@ -1,5 +1,7 @@
 package emuconfig
 
+import "time"
+
 const (
 	RAM_SIZE = 4096
 
@@ -7,6 +9,7 @@ const (
 	DISPLAY_HEIGHT = 32
 
 	TIMER_FREQUENCY = 60
+	TIMER_INTERVAL  = time.Second / TIMER_FREQUENCY
 
 	BEEPER_SAMPLE_RATE = 22050
 	BEEPER_BUFFER_SIZE = 2048

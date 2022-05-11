@@ -1,5 +1,11 @@
 package timer
 
+import (
+	"time"
+
+	"github.com/alperenbirol/chip-8/emuconfig"
+)
+
 type delayTimer struct {
 	timer
 }
@@ -10,7 +16,14 @@ type IDelayTimer interface {
 }
 
 func NewDelayTimer() IDelayTimer {
-	return &delayTimer{
-		timer: 0x00,
+	delayTimer := &delayTimer{
+		timer: timer{
+			remainingTime: 0x00,
+			ticker:        time.NewTicker(emuconfig.TIMER_INTERVAL),
+		},
 	}
+
+	go delayTimer.Tick()
+
+	return delayTimer
 }
