@@ -1,11 +1,11 @@
 package instructions
 
 import (
-	"github.com/alperenbirol/chip-8/emulator/memory"
+	"github.com/alperenbirol/chip-8/emuconfig"
 	"github.com/alperenbirol/chip-8/emulator/vm"
 )
 
-func Jump(address memory.Address) Instruction {
+func Jump(address emuconfig.Address) Instruction {
 	return func(vm *vm.VirtualMachine) {
 		vm.PC.SetToAddress(address)
 

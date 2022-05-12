@@ -1,16 +1,15 @@
 package programcounter
 
-import (
-	"github.com/alperenbirol/chip-8/emulator/memory"
-)
+import "github.com/alperenbirol/chip-8/emuconfig"
 
-type pc memory.Address
+type pc uint16
 
 type IProgramCounter interface {
 	NextInstruction()
 	Reset()
 	Decrement()
-	SetToAddress(address memory.Address)
+	SetToAddress(address emuconfig.Address)
+	Get() emuconfig.Address
 }
 
 func NewProgramCounter() IProgramCounter {
@@ -30,6 +29,10 @@ func (p *pc) Reset() {
 	*p = 0x200
 }
 
-func (p *pc) SetToAddress(address memory.Address) {
+func (p *pc) SetToAddress(address emuconfig.Address) {
 	*p = pc(address)
+}
+
+func (p *pc) Get() emuconfig.Address {
+	return emuconfig.Address(*p)
 }

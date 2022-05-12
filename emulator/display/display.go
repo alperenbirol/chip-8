@@ -1,14 +1,20 @@
 package display
 
-import "github.com/alperenbirol/chip-8/emuconfig"
+import (
+	"fmt"
+
+	"github.com/alperenbirol/chip-8/emuconfig"
+)
 
 type Display struct {
-	pixel [emuconfig.DISPLAY_WIDTH][emuconfig.DISPLAY_HEIGHT]pixel
+	pixels emuconfig.Pixels
 }
 
 type IDisplay interface {
 	Clear()
-	TogglePixel(x, y int)
+	Draw(x, y byte, sprite []byte) bool
+	AsciiPrint()
+	GetDisplay() emuconfig.Pixels
 }
 
 func NewDisplay() IDisplay {
@@ -16,22 +22,55 @@ func NewDisplay() IDisplay {
 	return d
 }
 
-func (d *Display) setPixel(x, y int, value pixel) {
-	d.pixel[x][y] = value
+func (d *Display) setPixel(x, y byte, value emuconfig.Pixel) {
+	d.pixels[y][x] = value
 }
 
-func (d *Display) getPixel(x, y int) pixel {
-	return d.pixel[x][y]
+func (d *Display) getPixel(x, y byte) emuconfig.Pixel {
+	return d.pixels[y][x]
 }
 
 func (d *Display) Clear() {
-	for x := 0; x < emuconfig.DISPLAY_WIDTH; x++ {
-		for y := 0; y < emuconfig.DISPLAY_HEIGHT; y++ {
-			d.setPixel(x, y, PIXEL_OFF)
+	for x := byte(0); x < emuconfig.DISPLAY_WIDTH; x++ {
+		for y := byte(0); y < emuconfig.DISPLAY_HEIGHT; y++ {
+			d.setPixel(x, y, emuconfig.PIXEL_OFF)
 		}
 	}
 }
 
-func (d *Display) TogglePixel(x, y int) {
-	d.setPixel(x, y, !d.getPixel(x, y))
+func (d *Display) Draw(x, y byte, sprite []byte) bool {
+	isOverlap := false
+	for i := 0; i < len(sprite); i++ {
+		binary := fmt.Sprintf("%08b", sprite[i])
+		for j := 0; j < 8; j++ {
+			if binary[j] == '1' {
+				if d.getPixel(x+byte(j), y+byte(i)) == emuconfig.PIXEL_ON {
+					isOverlap = true
+					d.setPixel(x+byte(j), y+byte(i), emuconfig.PIXEL_OFF)
+				} else {
+					d.setPixel(x+byte(j), y+byte(i), emuconfig.PIXEL_ON)
+				}
+			} else {
+				d.setPixel(x+byte(j)%64, y+byte(i)%32, emuconfig.PIXEL_OFF)
+			}
+		}
+	}
+	return isOverlap
+}
+
+func (d *Display) AsciiPrint() {
+	for y := byte(0); y < emuconfig.DISPLAY_HEIGHT; y++ {
+		for x := byte(0); x < emuconfig.DISPLAY_WIDTH; x++ {
+			if d.getPixel(x, y) == emuconfig.PIXEL_ON {
+				fmt.Print("█")
+			} else {
+				fmt.Print("░")
+			}
+		}
+		fmt.Println()
+	}
+}
+
+func (d *Display) GetDisplay() emuconfig.Pixels {
+	return d.pixels
 }

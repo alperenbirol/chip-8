@@ -1,28 +1,11 @@
 package decoder
 
 import (
+	"github.com/alperenbirol/chip-8/emuconfig"
 	"github.com/alperenbirol/chip-8/emulator/instructions"
-	"github.com/alperenbirol/chip-8/emulator/memory"
 )
 
-type Opcode [2]byte
-
-func (code *Opcode) Opcode() uint16 {
-	return uint16(code[0])<<8 | uint16(code[1])
-}
-
-type Nibble byte
-
-func (code *Opcode) GetNibbles() [4]Nibble {
-	return [4]Nibble{
-		Nibble(code[0] >> 4),
-		Nibble(code[0] & 0x0F),
-		Nibble(code[1] >> 4),
-		Nibble(code[1] & 0x0F),
-	}
-}
-
-func (code *Opcode) Decode() instructions.Instruction {
+func Decode(code *emuconfig.Opcode) instructions.Instruction {
 	nibbles := code.GetNibbles()
 	switch nibbles[0] {
 	case 0x0:
@@ -39,7 +22,7 @@ func (code *Opcode) Decode() instructions.Instruction {
 	case 0x1: // 1NNN - Jumps program counter to address NNN
 		// convert 3 nibbles to a 16 bit address
 		address := uint16(nibbles[1])<<8 | uint16(nibbles[2])<<4 | uint16(nibbles[3])
-		return instructions.Jump(memory.Address(address))
+		return instructions.Jump(emuconfig.Address(address))
 	case 0x6: // 6XNN - Sets register X to NN
 		// convert 2 nibbles to a byte value
 		byteValue := byte(nibbles[2]<<4 | nibbles[3])
@@ -57,7 +40,9 @@ func (code *Opcode) Decode() instructions.Instruction {
 		NNN := uint16(nibbles[1])<<8 | uint16(nibbles[2])<<4 | uint16(nibbles[3])
 		return instructions.SetIndexRegister(NNN)
 	case 0xD: // DXYN - Draws a sprite at coordinate (X,Y) with N bytes of sprite data
-
+		x, y := byte(nibbles[1]), byte(nibbles[2])
+		n := byte(nibbles[3])
+		return instructions.Display(x, y, n)
 	}
 
 	return nil

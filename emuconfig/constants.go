@@ -14,6 +14,9 @@ const (
 	BEEPER_SAMPLE_RATE = 22050
 	BEEPER_BUFFER_SIZE = 2048
 	BEEPER_FREQUENCY   = 440
+
+	PIXEL_ON  = Pixel(true)
+	PIXEL_OFF = Pixel(false)
 )
 
 var (
