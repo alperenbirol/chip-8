@@ -2,7 +2,6 @@ package emulator
 
 import (
 	"os"
-	"sync"
 	"time"
 
 	"github.com/alperenbirol/chip-8/emuconfig"
@@ -29,22 +28,7 @@ func (e *Emulator) instructionLoop() {
 }
 
 func (e *Emulator) Run() {
-	var wg sync.WaitGroup
-
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		e.instructionLoop()
-	}()
-	go func() {
-		for {
-			if e.vm.IsDrawing {
-				e.vm.Display.AsciiPrint()
-				e.vm.IsDrawing = false
-			}
-		}
-	}()
-	wg.Wait()
+	go e.instructionLoop()
 }
 
 func loadFile(filepath string) ([]byte, error) {
@@ -96,4 +80,13 @@ func (e *Emulator) IsDrawing() bool {
 
 func (e *Emulator) GetDisplayBits() emuconfig.Pixels {
 	return e.vm.Display.GetDisplay()
+}
+
+func (e *Emulator) PrintBlocking() {
+	for range e.ticker.C {
+		if e.vm.IsDrawing {
+			e.vm.Display.AsciiPrint()
+			e.vm.IsDrawing = false
+		}
+	}
 }
