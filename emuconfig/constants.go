@@ -1,6 +1,11 @@
 package emuconfig
 
-import "time"
+import (
+	"image"
+	"time"
+
+	"image/color"
+)
 
 const (
 	RAM_SIZE = 4096
@@ -38,4 +43,9 @@ var (
 		0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
 		0xF0, 0x80, 0xF0, 0x80, 0x80, // F
 	}
+
+	IMAGE_BOUNDS = image.Rect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT)
+
+	PIXEL_ON_COLOR  = color.RGBA{0xff, 0xff, 0xff, 0xff}
+	PIXEL_OFF_COLOR = color.RGBA{0x00, 0x00, 0x00, 0xff}
 )

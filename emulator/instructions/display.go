@@ -11,7 +11,7 @@ func Display(xPosRegister, yPosRegister, size byte) Instruction {
 
 		vm.Registers[0xF] = 0
 
-		bytes := vm.RAM.FetchBytes(vm.IndexRegister.Get(), size)
+		bytes := vm.RAM.FetchBytes(vm.IndexRegister.Get(), uint16(size))
 
 		if vm.Display.Draw(x, y, bytes) {
 			vm.Registers[0xF] = 1

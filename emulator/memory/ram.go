@@ -4,9 +4,8 @@ import (
 	"github.com/alperenbirol/chip-8/emuconfig"
 )
 
-type ram [emuconfig.RAM_SIZE]byte
 type Memory struct {
-	ram
+	emuconfig.Ram
 }
 
 type IMemory interface {
@@ -15,7 +14,8 @@ type IMemory interface {
 	FetchInstruction(address emuconfig.Address) emuconfig.Opcode
 	UnloadROM()
 	FetchByte(address emuconfig.Address) byte
-	FetchBytes(address emuconfig.Address, length byte) []byte
+	FetchBytes(address emuconfig.Address, length uint16) []byte
+	GetRamPointer() *emuconfig.Ram
 }
 
 func NewMemory() IMemory {
@@ -23,12 +23,12 @@ func NewMemory() IMemory {
 }
 
 func (m *Memory) loadAtAddress(address emuconfig.Address, data []byte) {
-	copy(m.ram[address:], data)
+	copy(m.Ram[address:], data)
 }
 
 func (m *Memory) UnloadROM() {
-	for i := 0x200; i < len(m.ram); i++ {
-		m.ram[i] = 0x00
+	for i := 0x200; i < len(m.Ram); i++ {
+		m.Ram[i] = 0x00
 	}
 }
 
@@ -42,14 +42,18 @@ func (m *Memory) LoadFonts(fonts []byte) {
 
 func (m *Memory) FetchInstruction(address emuconfig.Address) emuconfig.Opcode {
 	return [2]byte{
-		m.ram[address], m.ram[address+1],
+		m.Ram[address], m.Ram[address+1],
 	}
 }
 
 func (m *Memory) FetchByte(address emuconfig.Address) byte {
-	return m.ram[address]
+	return m.Ram[address]
 }
 
-func (m *Memory) FetchBytes(address emuconfig.Address, length byte) []byte {
-	return m.ram[address : address+emuconfig.Address(length)]
+func (m *Memory) FetchBytes(address emuconfig.Address, length uint16) []byte {
+	return m.Ram[address : address+emuconfig.Address(length)]
+}
+
+func (m *Memory) GetRamPointer() *emuconfig.Ram {
+	return &m.Ram
 }

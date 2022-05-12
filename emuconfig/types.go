@@ -19,6 +19,8 @@ func (code *Opcode) GetNibbles() [4]Nibble {
 
 type Address uint16
 
+type Ram [RAM_SIZE]byte
+
 type Pixel bool
 
 type Pixels [DISPLAY_HEIGHT][DISPLAY_WIDTH]Pixel

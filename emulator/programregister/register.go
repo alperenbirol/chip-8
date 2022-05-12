@@ -13,3 +13,7 @@ func (r *ProgramRegister) Subtract(value byte) {
 func (r *ProgramRegister) Set(value byte) {
 	*r = ProgramRegister(value)
 }
+
+func (r *ProgramRegister) Get() byte {
+	return byte(*r)
+}

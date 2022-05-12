@@ -7,6 +7,7 @@ import (
 	"github.com/alperenbirol/chip-8/emuconfig"
 	"github.com/alperenbirol/chip-8/emulator/beeper"
 	"github.com/alperenbirol/chip-8/emulator/decoder"
+	"github.com/alperenbirol/chip-8/emulator/programregister"
 	"github.com/alperenbirol/chip-8/emulator/vm"
 )
 
@@ -47,10 +48,15 @@ func NewEmulator() *Emulator {
 
 	ticker := time.NewTicker(emuconfig.TIMER_INTERVAL)
 
-	return &Emulator{
+	emulator := &Emulator{
 		vm:     vm.NewVirtualMachine(beeper),
 		ticker: ticker,
 	}
+
+	emulator.vm.PC.SetToAddress(0x200)
+	emulator.vm.RAM.LoadFonts(emuconfig.DEFAULT_FONT_SET[:])
+
+	return emulator
 }
 
 func (e *Emulator) LoadROM(pathToRom string) error {
@@ -82,6 +88,10 @@ func (e *Emulator) GetDisplayBits() emuconfig.Pixels {
 	return e.vm.Display.GetDisplay()
 }
 
+func (e *Emulator) GetMemory() *emuconfig.Ram {
+	return e.vm.RAM.GetRamPointer()
+}
+
 func (e *Emulator) PrintBlocking() {
 	for range e.ticker.C {
 		if e.vm.IsDrawing {
@@ -89,4 +99,8 @@ func (e *Emulator) PrintBlocking() {
 			e.vm.IsDrawing = false
 		}
 	}
+}
+
+func (e *Emulator) GetRegisters() [16]programregister.ProgramRegister {
+	return e.vm.Registers
 }
