@@ -50,6 +50,9 @@ func (gui *GUI) loop() {
 		g.Window("Keypad").Size(250, 250).Pos(1090, 80).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
 			debugwidgets.KeypadWindow(),
 		)
+		g.Window("Window").Size(200, 200).Pos(1340, 80).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
+			g.Label("a"),
+		)
 		g.Window("Instructions").Size(560, 320).Pos(1090, 330).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
 			debugwidgets.InstructionsWidget(gui.debugProps.Instructions),
 		)
@@ -65,6 +68,9 @@ func (gui *GUI) loop() {
 		g.Window("Sound Timer").Size(120, 50).Pos(1530, 230).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
 			debugwidgets.TimerWidget(gui.debugProps.SoundTimerTime),
 		)
+		g.Window("Color Picker").Size(1650, 50).Pos(1340, 280).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
+			debugwidgets.ColorPickerWidget(),
+		)
 		g.Window("Emulator Menu").Size(500, 210).Pos(590, 440).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
 			debugwidgets.EmulatorMenuWidget(gui.debugProps.Functions, gui.emulatorDebugMenuProps),
 		)
@@ -76,11 +82,9 @@ func (gui *GUI) loop() {
 }
 
 func (gui *GUI) refreshDisplay() {
-	if *gui.debugProps.IsDrawing {
-		g.NewTextureFromRgba(displayconverter.Convert(gui.debugProps.Functions.GetDisplay()), func(t *g.Texture) {
-			gui.display = t
-		})
-	}
+	g.NewTextureFromRgba(displayconverter.Convert(gui.debugProps.Functions.GetDisplay()), func(t *g.Texture) {
+		gui.display = t
+	})
 }
 
 func (gui *GUI) setTextureFilter() error {
