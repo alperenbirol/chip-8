@@ -33,5 +33,5 @@ func InstructionsWidget(instructions []emuconfig.Opcode) *giu.TableWidget {
 		giu.TableColumn("Description"),
 	).Rows(
 		rows...,
-	).FastMode(true)
+	).FastMode(false)
 }
