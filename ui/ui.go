@@ -4,6 +4,7 @@ import (
 	"image/color"
 
 	g "github.com/AllenDang/giu"
+	"github.com/alperenbirol/chip-8/emuconfig"
 	"github.com/alperenbirol/chip-8/emulator"
 	"github.com/alperenbirol/chip-8/emulator/beeper"
 	"github.com/alperenbirol/chip-8/ui/displayconverter"
@@ -28,20 +29,23 @@ func loop() {
 	}
 	go gui.refreshDisplay()
 	if gui.isDebugging {
-		g.Window("Registers").Size(1650, 80).Pos(0, 0).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
+		g.Window("Registers").Size(1650, 80).Pos(0, 0).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
 			debugwidgets.RegistersWidget(gui.emulator.DebugProps.Registers),
 		)
-		g.Window("Memory").Size(435, 360).Pos(0, 80).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
+		g.Window("Memory").Size(435, 360).Pos(0, 80).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
 			debugwidgets.MemoryWidget(gui.emulator.DebugProps.Memory),
 		)
-		g.Window("Keypad").Size(250, 250).Pos(1090, 80).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
+		g.Window("Keypad").Size(250, 250).Pos(1090, 80).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
 			debugwidgets.KeypadWindow(),
 		)
-		g.Window("Instructions").Size(560, 320).Pos(1090, 330).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
+		g.Window("Instructions").Size(560, 320).Pos(1090, 330).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
 			debugwidgets.InstructionsWidget(gui.emulator.DebugProps.Instructions),
 		)
-		g.Window("Index Register").Size(110, 50).Pos(1540, 80).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
+		g.Window("Index Register").Size(110, 50).Pos(1540, 80).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
 			debugwidgets.IndexRegisterWidget(gui.emulator.DebugProps.IndexRegister),
+		)
+		g.Window("Emulator Menu").Size(500, 210).Pos(590, 440).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
+			debugwidgets.EmulatorMenuWidget(gui.emulator.Reset),
 		)
 	}
 

@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"image/color"
+
+	"github.com/AllenDang/giu"
 )
 
 const (
@@ -22,6 +24,8 @@ const (
 
 	PIXEL_ON  = Pixel(true)
 	PIXEL_OFF = Pixel(false)
+
+	DEBUG_WIDGET_FLAGS = giu.WindowFlagsNoCollapse | giu.WindowFlagsNoMove | giu.WindowFlagsNoResize
 )
 
 var (

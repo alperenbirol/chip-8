@@ -90,6 +90,10 @@ func (e *Emulator) LoadROM(pathToRom string) error {
 }
 
 func (e *Emulator) Reset() {
+	e.vm.IndexRegister.Set(0x00)
+	e.vm.Registers = [16]programregister.ProgramRegister{}
+	e.vm.DelayTimer.SetTimer(0x00)
+	e.vm.SoundTimer.SetTimer(0x00)
 	e.vm.PC.SetToAddress(0x200)
 	e.DebugProps = &debugProps{}
 }
