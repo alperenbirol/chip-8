@@ -12,31 +12,32 @@ import (
 	"github.com/alperenbirol/chip-8/ui/windows/mainwindow"
 )
 
-var ran = false
-var freq int32 = 60
-
 type GuiConfig struct {
-	IsDebugging bool
-	DebugProps  *emulator.DebugProps
+	IsDebugging            bool
+	DebugProps             *emulator.DebugProps
+	EmulatorDebugMenuProps *debugwidgets.EmulatorMenuProps
 }
 
 type GUI struct {
-	display    *g.Texture
-	debugProps *emulator.DebugProps
+	ran                    bool
+	display                *g.Texture
+	debugProps             *emulator.DebugProps
+	emulatorDebugMenuProps *debugwidgets.EmulatorMenuProps
 
 	isDebugging bool
 }
 
 func NewGUI(config *GuiConfig) *GUI {
 	return &GUI{
-		debugProps:  config.DebugProps,
-		isDebugging: config.IsDebugging,
+		debugProps:             config.DebugProps,
+		isDebugging:            config.IsDebugging,
+		emulatorDebugMenuProps: config.EmulatorDebugMenuProps,
 	}
 }
 
 func (gui *GUI) loop() {
-	if !ran {
-		setTextureFilter()
+	if !gui.ran {
+		gui.setTextureFilter()
 	}
 	go gui.refreshDisplay()
 	if gui.isDebugging {
@@ -52,11 +53,14 @@ func (gui *GUI) loop() {
 		g.Window("Instructions").Size(560, 320).Pos(1090, 330).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
 			debugwidgets.InstructionsWidget(gui.debugProps.Instructions),
 		)
-		g.Window("Index Register").Size(110, 50).Pos(1540, 80).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
+		g.Window("Index Register").Size(120, 50).Pos(1530, 80).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
 			debugwidgets.IndexRegisterWidget(gui.debugProps.IndexRegister),
 		)
+		g.Window("Program Counter").Size(120, 50).Pos(1530, 130).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
+			debugwidgets.ProgramCounterWidget(gui.debugProps.ProgramCounter),
+		)
 		g.Window("Emulator Menu").Size(500, 210).Pos(590, 440).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
-			debugwidgets.EmulatorMenuWidget(gui.debugProps.Functions, *gui.debugProps.Paused, &freq),
+			debugwidgets.EmulatorMenuWidget(gui.debugProps.Functions, gui.emulatorDebugMenuProps),
 		)
 	}
 
@@ -73,8 +77,8 @@ func (gui *GUI) refreshDisplay() {
 	}
 }
 
-func setTextureFilter() error {
-	ran = true
+func (gui *GUI) setTextureFilter() error {
+	gui.ran = true
 	return g.Context.GetRenderer().SetTextureMagFilter(g.TextureFilterNearest)
 }
 

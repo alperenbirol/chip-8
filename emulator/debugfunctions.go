@@ -21,13 +21,14 @@ type EmulatorFunctions struct {
 }
 
 type DebugProps struct {
-	Instructions  []emuconfig.Opcode
-	Memory        *emuconfig.Ram
-	Registers     *[16]programregister.ProgramRegister
-	IndexRegister *indexregister.IndexRegister
-	IsDrawing     *bool
-	Paused        *bool
-	Functions     *EmulatorFunctions
+	Instructions   []emuconfig.Opcode
+	Memory         *emuconfig.Ram
+	Registers      *[16]programregister.ProgramRegister
+	IndexRegister  *indexregister.IndexRegister
+	ProgramCounter *uint16
+	IsDrawing      *bool
+	Paused         *bool
+	Functions      *EmulatorFunctions
 }
 
 func (e *Emulator) setDebugProps() {
@@ -36,6 +37,7 @@ func (e *Emulator) setDebugProps() {
 	e.DebugProps.Registers = &e.vm.Registers
 	e.DebugProps.IndexRegister = &e.vm.IndexRegister
 	e.DebugProps.IsDrawing = &e.vm.IsDrawing
+	e.DebugProps.ProgramCounter = e.vm.PC.GetPointer()
 }
 
 func (e *Emulator) setDebugFunctions() {

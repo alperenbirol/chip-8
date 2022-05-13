@@ -10,6 +10,7 @@ type IProgramCounter interface {
 	Decrement()
 	SetToAddress(address emuconfig.Address)
 	Get() emuconfig.Address
+	GetPointer() *uint16
 }
 
 func NewProgramCounter() IProgramCounter {
@@ -35,4 +36,8 @@ func (p *pc) SetToAddress(address emuconfig.Address) {
 
 func (p *pc) Get() emuconfig.Address {
 	return emuconfig.Address(*p)
+}
+
+func (p *pc) GetPointer() *uint16 {
+	return (*uint16)(p)
 }
