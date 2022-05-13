@@ -12,19 +12,28 @@ import (
 	"github.com/alperenbirol/chip-8/emulator/vm"
 )
 
-type debugProps struct {
+type EmulatorFunctions struct {
+	Reset   func()
+	LoadROM func(string) error
+	Clear   func()
+
+	GetDisplay func() emuconfig.Pixels
+}
+
+type DebugProps struct {
 	Instructions  []emuconfig.Opcode
 	Memory        emuconfig.Ram
 	Registers     [16]programregister.ProgramRegister
 	IndexRegister indexregister.IndexRegister
 	IsDrawing     bool
+	Functions     *EmulatorFunctions
 }
 
 type Emulator struct {
 	vm     *vm.VirtualMachine
 	ticker *time.Ticker
 
-	DebugProps *debugProps
+	DebugProps *DebugProps
 }
 
 func (e *Emulator) instructionLoop() {
@@ -68,11 +77,18 @@ func NewEmulator(beeper beeper.IBeeper) *Emulator {
 	emulator := &Emulator{
 		vm:         vm.NewVirtualMachine(beeper),
 		ticker:     ticker,
-		DebugProps: &debugProps{},
+		DebugProps: &DebugProps{},
 	}
 
 	emulator.vm.PC.SetToAddress(0x200)
 	emulator.vm.RAM.LoadFonts(emuconfig.DEFAULT_FONT_SET[:])
+
+	emulator.DebugProps.Functions = &EmulatorFunctions{
+		Reset:      emulator.Reset,
+		LoadROM:    emulator.LoadROM,
+		Clear:      emulator.Clear,
+		GetDisplay: emulator.GetDisplayBits,
+	}
 
 	return emulator
 }
@@ -95,7 +111,7 @@ func (e *Emulator) Reset() {
 	e.vm.DelayTimer.SetTimer(0x00)
 	e.vm.SoundTimer.SetTimer(0x00)
 	e.vm.PC.SetToAddress(0x200)
-	e.DebugProps = &debugProps{}
+	e.DebugProps.Instructions = []emuconfig.Opcode{}
 }
 
 func (e *Emulator) Clear() {

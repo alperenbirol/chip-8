@@ -1,4 +1,4 @@
-package main
+package ui
 
 import (
 	"image/color"
@@ -6,46 +6,56 @@ import (
 	g "github.com/AllenDang/giu"
 	"github.com/alperenbirol/chip-8/emuconfig"
 	"github.com/alperenbirol/chip-8/emulator"
-	"github.com/alperenbirol/chip-8/emulator/beeper"
 	"github.com/alperenbirol/chip-8/ui/displayconverter"
 	"github.com/alperenbirol/chip-8/ui/widgets"
 	"github.com/alperenbirol/chip-8/ui/widgets/debugwidgets"
 	"github.com/alperenbirol/chip-8/ui/windows/mainwindow"
 )
 
-var gui *GUI
 var ran = false
 
+type GuiConfig struct {
+	IsDebugging bool
+	DebugProps  *emulator.DebugProps
+}
+
 type GUI struct {
-	display  *g.Texture
-	emulator *emulator.Emulator
+	display    *g.Texture
+	debugProps *emulator.DebugProps
 
 	isDebugging bool
 }
 
-func loop() {
+func NewGUI(config *GuiConfig) *GUI {
+	return &GUI{
+		debugProps:  config.DebugProps,
+		isDebugging: config.IsDebugging,
+	}
+}
+
+func (gui *GUI) loop() {
 	if !ran {
 		setTextureFilter()
 	}
 	go gui.refreshDisplay()
 	if gui.isDebugging {
 		g.Window("Registers").Size(1650, 80).Pos(0, 0).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
-			debugwidgets.RegistersWidget(gui.emulator.DebugProps.Registers),
+			debugwidgets.RegistersWidget(gui.debugProps.Registers),
 		)
 		g.Window("Memory").Size(435, 360).Pos(0, 80).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
-			debugwidgets.MemoryWidget(gui.emulator.DebugProps.Memory),
+			debugwidgets.MemoryWidget(gui.debugProps.Memory),
 		)
 		g.Window("Keypad").Size(250, 250).Pos(1090, 80).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
 			debugwidgets.KeypadWindow(),
 		)
 		g.Window("Instructions").Size(560, 320).Pos(1090, 330).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
-			debugwidgets.InstructionsWidget(gui.emulator.DebugProps.Instructions),
+			debugwidgets.InstructionsWidget(gui.debugProps.Instructions),
 		)
 		g.Window("Index Register").Size(110, 50).Pos(1540, 80).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
-			debugwidgets.IndexRegisterWidget(gui.emulator.DebugProps.IndexRegister),
+			debugwidgets.IndexRegisterWidget(gui.debugProps.IndexRegister),
 		)
 		g.Window("Emulator Menu").Size(500, 210).Pos(590, 440).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
-			debugwidgets.EmulatorMenuWidget(gui.emulator.Reset),
+			debugwidgets.EmulatorMenuWidget(gui.debugProps.Functions),
 		)
 	}
 
@@ -54,26 +64,12 @@ func loop() {
 	)
 }
 
-func main() {
-	beeper, _ := beeper.NewBeeper()
-	gui = &GUI{
-		emulator:    emulator.NewEmulator(beeper),
-		isDebugging: true,
-	}
-
-	gui.emulator.LoadROM("../roms/ibm.ch8")
-	gui.emulator.Run()
-
-	mainwindow.InitGUI(loop)
-}
-
 func (gui *GUI) refreshDisplay() {
-	if gui.emulator.DebugProps.IsDrawing {
-		g.NewTextureFromRgba(displayconverter.Convert(gui.emulator.GetDisplayBits()), func(t *g.Texture) {
+	if gui.debugProps.IsDrawing {
+		g.NewTextureFromRgba(displayconverter.Convert(gui.debugProps.Functions.GetDisplay()), func(t *g.Texture) {
 			gui.display = t
 		})
 	}
-	ran = true
 }
 
 func setTextureFilter() error {
@@ -81,6 +77,14 @@ func setTextureFilter() error {
 	if err != nil {
 		return err
 	}
+	ran = true
 
 	return nil
+}
+
+func (gui *GUI) Run() {
+	mainwindow.InitGUI(gui.loop)
+	g.EnqueueNewTextureFromRgba(displayconverter.Convert(gui.debugProps.Functions.GetDisplay()), func(t *g.Texture) {
+		gui.display = t
+	})
 }
