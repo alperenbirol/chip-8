@@ -13,7 +13,7 @@ func RegistersWidget(registers [16]programregister.ProgramRegister) *giu.TableWi
 
 	for index, register := range registers {
 		tableColumns = append(tableColumns, giu.TableColumn(fmt.Sprintf("Register: v%x", index)))
-		registerLabels = append(registerLabels, giu.Label(fmt.Sprintf("%x", register.Get())))
+		registerLabels = append(registerLabels, giu.Label(fmt.Sprintf("0x%x", register.Get())))
 	}
 
 	return giu.Table().Columns(

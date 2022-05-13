@@ -4,14 +4,13 @@ import (
 	"fmt"
 
 	"github.com/AllenDang/giu"
-	g "github.com/AllenDang/giu"
 	"github.com/AllenDang/imgui-go"
 	"github.com/alperenbirol/chip-8/emuconfig"
 	"github.com/alperenbirol/chip-8/emulator/decoder"
 )
 
-func InstructionsWidget(instructions []emuconfig.Opcode) *g.TableWidget {
-	var rows []*g.TableRowWidget
+func InstructionsWidget(instructions []emuconfig.Opcode) *giu.TableWidget {
+	var rows []*giu.TableRowWidget
 	i := 0
 
 	for _, instruction := range instructions {
@@ -28,10 +27,10 @@ func InstructionsWidget(instructions []emuconfig.Opcode) *g.TableWidget {
 		))
 	}
 
-	return g.Table().Columns(
-		g.TableColumn("I").Flags(g.TableColumnFlagsWidthFixed).InnerWidthOrWeight(40),
-		g.TableColumn("Opcode").Flags(g.TableColumnFlagsWidthFixed).InnerWidthOrWeight(60),
-		g.TableColumn("Description"),
+	return giu.Table().Columns(
+		giu.TableColumn("I").Flags(giu.TableColumnFlagsWidthFixed).InnerWidthOrWeight(40),
+		giu.TableColumn("Opcode").Flags(giu.TableColumnFlagsWidthFixed).InnerWidthOrWeight(60),
+		giu.TableColumn("Description"),
 	).Rows(
 		rows...,
 	).FastMode(true)

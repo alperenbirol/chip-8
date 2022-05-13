@@ -7,14 +7,17 @@ import (
 	"github.com/alperenbirol/chip-8/emuconfig"
 	"github.com/alperenbirol/chip-8/emulator/beeper"
 	"github.com/alperenbirol/chip-8/emulator/decoder"
+	"github.com/alperenbirol/chip-8/emulator/indexregister"
 	"github.com/alperenbirol/chip-8/emulator/programregister"
 	"github.com/alperenbirol/chip-8/emulator/vm"
 )
 
 type debugProps struct {
-	Instructions []emuconfig.Opcode
-	Memory       emuconfig.Ram
-	Registers    [16]programregister.ProgramRegister
+	Instructions  []emuconfig.Opcode
+	Memory        emuconfig.Ram
+	Registers     [16]programregister.ProgramRegister
+	IndexRegister indexregister.IndexRegister
+	IsDrawing     bool
 }
 
 type Emulator struct {
@@ -43,6 +46,8 @@ func (e *Emulator) setDebugProps(instruction emuconfig.Opcode) {
 	}
 	e.DebugProps.Memory = e.vm.RAM.GetRam()
 	e.DebugProps.Registers = e.vm.Registers
+	e.DebugProps.IndexRegister = e.vm.IndexRegister
+	e.DebugProps.IsDrawing = e.vm.IsDrawing
 }
 
 func (e *Emulator) Run() {
@@ -57,12 +62,7 @@ func loadFile(filepath string) ([]byte, error) {
 	return bytes, nil
 }
 
-func NewEmulator() *Emulator {
-	beeper, err := beeper.NewBeeper()
-	if err != nil {
-		panic(err)
-	}
-
+func NewEmulator(beeper beeper.IBeeper) *Emulator {
 	ticker := time.NewTicker(emuconfig.TIMER_INTERVAL)
 
 	emulator := &Emulator{
@@ -91,15 +91,13 @@ func (e *Emulator) LoadROM(pathToRom string) error {
 
 func (e *Emulator) Reset() {
 	e.vm.PC.SetToAddress(0x200)
+	e.DebugProps = &debugProps{}
 }
 
 func (e *Emulator) Clear() {
 	e.vm.Display.Clear()
 	e.vm.RAM.UnloadROM()
-}
-
-func (e *Emulator) IsDrawing() bool {
-	return e.vm.IsDrawing
+	e.Reset()
 }
 
 func (e *Emulator) GetDisplayBits() emuconfig.Pixels {

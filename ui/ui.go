@@ -5,6 +5,7 @@ import (
 
 	g "github.com/AllenDang/giu"
 	"github.com/alperenbirol/chip-8/emulator"
+	"github.com/alperenbirol/chip-8/emulator/beeper"
 	"github.com/alperenbirol/chip-8/ui/displayconverter"
 	"github.com/alperenbirol/chip-8/ui/widgets"
 	"github.com/alperenbirol/chip-8/ui/widgets/debugwidgets"
@@ -39,6 +40,9 @@ func loop() {
 		g.Window("Instructions").Size(560, 320).Pos(1090, 330).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
 			debugwidgets.InstructionsWidget(gui.emulator.DebugProps.Instructions),
 		)
+		g.Window("Index Register").Size(110, 50).Pos(1540, 80).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
+			debugwidgets.IndexRegisterWidget(gui.emulator.DebugProps.IndexRegister),
+		)
 	}
 
 	g.Window("Display").Pos(435, 80).Size(655, 360).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoResize | g.WindowFlagsNoMove).Layout(
@@ -47,8 +51,9 @@ func loop() {
 }
 
 func main() {
+	beeper, _ := beeper.NewBeeper()
 	gui = &GUI{
-		emulator:    emulator.NewEmulator(),
+		emulator:    emulator.NewEmulator(beeper),
 		isDebugging: true,
 	}
 
@@ -59,7 +64,7 @@ func main() {
 }
 
 func (gui *GUI) refreshDisplay() {
-	if gui.emulator.IsDrawing() {
+	if gui.emulator.DebugProps.IsDrawing {
 		g.NewTextureFromRgba(displayconverter.Convert(gui.emulator.GetDisplayBits()), func(t *g.Texture) {
 			gui.display = t
 		})

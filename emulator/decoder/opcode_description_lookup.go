@@ -22,18 +22,18 @@ func Description(opcode *emuconfig.Opcode) string {
 		}
 	case 0x1:
 		address := uint16(nibbles[1])<<8 | uint16(nibbles[2])<<4 | uint16(nibbles[3])
-		return fmt.Sprintf("Jump program counter to address %x", address)
+		return fmt.Sprintf("Jump program counter to address 0x%x", address)
 	case 0x6:
 		byteValue := byte(nibbles[2]<<4 | nibbles[3])
 		registerIndex := byte(nibbles[1])
-		return fmt.Sprintf("Set register v%x to %x", registerIndex, byteValue)
+		return fmt.Sprintf("Set register v%x to 0x%x", registerIndex, byteValue)
 	case 0x7:
 		byteValue := byte(nibbles[2]<<4 | nibbles[3])
 		registerIndex := byte(nibbles[1])
-		return fmt.Sprintf("Add %x to register v%x", byteValue, registerIndex)
+		return fmt.Sprintf("Add 0x%x to register v%x", byteValue, registerIndex)
 	case 0xA:
 		NNN := uint16(nibbles[1])<<8 | uint16(nibbles[2])<<4 | uint16(nibbles[3])
-		return fmt.Sprintf("Set index register to %x", NNN)
+		return fmt.Sprintf("Set index register to 0x%x", NNN)
 	case 0xD: // DXYN - Draws a sprite at coordinate (X,Y) with N bytes of sprite data
 		x, y := byte(nibbles[1]), byte(nibbles[2])
 		n := byte(nibbles[3])
