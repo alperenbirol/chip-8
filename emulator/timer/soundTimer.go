@@ -33,7 +33,9 @@ func NewSoundTimer(beeper beeper.IBeeper) ISoundTimer {
 
 func (t *soundTimer) SetTimer(d byte) {
 	t.remainingTime = d
-	t.Play()
+	if d > 0 {
+		t.Play()
+	}
 }
 
 func (t *soundTimer) Tick() {
