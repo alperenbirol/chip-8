@@ -15,6 +15,7 @@ type soundTimer struct {
 type ISoundTimer interface {
 	SetTimer(d byte)
 	Tick()
+	GetRemainingTimePointer() *byte
 }
 
 func NewSoundTimer(beeper beeper.IBeeper) ISoundTimer {

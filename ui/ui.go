@@ -59,6 +59,12 @@ func (gui *GUI) loop() {
 		g.Window("Program Counter").Size(120, 50).Pos(1530, 130).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
 			debugwidgets.ProgramCounterWidget(gui.debugProps.ProgramCounter),
 		)
+		g.Window("Delay Timer").Size(120, 50).Pos(1530, 180).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
+			debugwidgets.TimerWidget(gui.debugProps.DelayTimerTime),
+		)
+		g.Window("Sound Timer").Size(120, 50).Pos(1530, 230).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
+			debugwidgets.TimerWidget(gui.debugProps.SoundTimerTime),
+		)
 		g.Window("Emulator Menu").Size(500, 210).Pos(590, 440).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
 			debugwidgets.EmulatorMenuWidget(gui.debugProps.Functions, gui.emulatorDebugMenuProps),
 		)

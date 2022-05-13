@@ -25,3 +25,7 @@ func (t *timer) Tick() {
 func (t *timer) decrease() {
 	t.remainingTime--
 }
+
+func (t *timer) GetRemainingTimePointer() *byte {
+	return &t.remainingTime
+}

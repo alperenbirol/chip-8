@@ -13,6 +13,7 @@ type delayTimer struct {
 type IDelayTimer interface {
 	SetTimer(d byte)
 	Tick()
+	GetRemainingTimePointer() *byte
 }
 
 func NewDelayTimer() IDelayTimer {

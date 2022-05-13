@@ -3,6 +3,8 @@ package debugwidgets
 import (
 	"github.com/AllenDang/giu"
 	"github.com/alperenbirol/chip-8/emulator"
+	"github.com/alperenbirol/chip-8/ui/filebrowser"
+	"github.com/sqweek/dialog"
 )
 
 type EmulatorMenuProps struct {
@@ -43,8 +45,19 @@ func EmulatorMenuWidget(functions *emulator.EmulatorFunctions, props *EmulatorMe
 				giu.Row(
 					giu.Label("ROM Path"),
 					giu.InputText(props.RomPath).Size(140),
-					giu.Button("Open").Size(50, 20).OnClick(func() {}),
-					giu.Button("Load").Size(50, 20).OnClick(func() {}),
+					giu.Button("Open").Size(50, 20).OnClick(func() {
+						romPath, err := filebrowser.BrowseRom()
+						if err != nil {
+							if err == dialog.ErrCancelled {
+								return
+							}
+							panic(err)
+						}
+						props.RomPath = &romPath
+					}),
+					giu.Button("Load").Size(50, 20).OnClick(func() {
+						functions.LoadROM(*props.RomPath)
+					}),
 				),
 			),
 		),

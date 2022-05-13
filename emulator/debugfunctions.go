@@ -26,6 +26,8 @@ type DebugProps struct {
 	Registers      *[16]programregister.ProgramRegister
 	IndexRegister  *indexregister.IndexRegister
 	ProgramCounter *uint16
+	DelayTimerTime *byte
+	SoundTimerTime *byte
 	IsDrawing      *bool
 	Paused         *bool
 	Functions      *EmulatorFunctions
@@ -38,6 +40,8 @@ func (e *Emulator) setDebugProps() {
 	e.DebugProps.IndexRegister = &e.vm.IndexRegister
 	e.DebugProps.IsDrawing = &e.vm.IsDrawing
 	e.DebugProps.ProgramCounter = e.vm.PC.GetPointer()
+	e.DebugProps.DelayTimerTime = e.vm.DelayTimer.GetRemainingTimePointer()
+	e.DebugProps.SoundTimerTime = e.vm.SoundTimer.GetRemainingTimePointer()
 }
 
 func (e *Emulator) setDebugFunctions() {
