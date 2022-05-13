@@ -13,6 +13,7 @@ import (
 )
 
 var ran = false
+var freq int32 = 60
 
 type GuiConfig struct {
 	IsDebugging bool
@@ -55,7 +56,7 @@ func (gui *GUI) loop() {
 			debugwidgets.IndexRegisterWidget(gui.debugProps.IndexRegister),
 		)
 		g.Window("Emulator Menu").Size(500, 210).Pos(590, 440).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
-			debugwidgets.EmulatorMenuWidget(gui.debugProps.Functions),
+			debugwidgets.EmulatorMenuWidget(gui.debugProps.Functions, *gui.debugProps.Paused, &freq),
 		)
 	}
 
@@ -65,7 +66,7 @@ func (gui *GUI) loop() {
 }
 
 func (gui *GUI) refreshDisplay() {
-	if gui.debugProps.IsDrawing {
+	if *gui.debugProps.IsDrawing {
 		g.NewTextureFromRgba(displayconverter.Convert(gui.debugProps.Functions.GetDisplay()), func(t *g.Texture) {
 			gui.display = t
 		})
@@ -73,13 +74,8 @@ func (gui *GUI) refreshDisplay() {
 }
 
 func setTextureFilter() error {
-	err := g.Context.GetRenderer().SetTextureMagFilter(g.TextureFilterNearest)
-	if err != nil {
-		return err
-	}
 	ran = true
-
-	return nil
+	return g.Context.GetRenderer().SetTextureMagFilter(g.TextureFilterNearest)
 }
 
 func (gui *GUI) Run() {

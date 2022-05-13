@@ -7,7 +7,7 @@ import (
 	"github.com/alperenbirol/chip-8/emulator/programregister"
 )
 
-func RegistersWidget(registers [16]programregister.ProgramRegister) *giu.TableWidget {
+func RegistersWidget(registers *[16]programregister.ProgramRegister) *giu.TableWidget {
 	var tableColumns []*giu.TableColumnWidget
 	var registerLabels []giu.Widget
 
