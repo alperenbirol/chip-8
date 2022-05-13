@@ -11,21 +11,36 @@ import (
 	"github.com/alperenbirol/chip-8/emulator/vm"
 )
 
+type debugProps struct {
+	Instruction chan emuconfig.Opcode
+	Memory      emuconfig.Ram
+	Registers   [16]programregister.ProgramRegister
+}
+
 type Emulator struct {
 	vm     *vm.VirtualMachine
 	ticker *time.Ticker
+
+	DebugProps *debugProps
 }
 
 func (e *Emulator) instructionLoop() {
 	for range e.ticker.C {
 		pc := e.vm.PC.Get()
 		instruction := e.vm.RAM.FetchInstruction(pc)
+		e.setDebugProps(instruction)
 
 		cmd := decoder.Decode(&instruction)
 		cmd(e.vm)
 
 		e.vm.PC.NextInstruction()
 	}
+}
+
+func (e *Emulator) setDebugProps(instruction emuconfig.Opcode) {
+	e.DebugProps.Instruction <- instruction
+	e.DebugProps.Memory = e.vm.RAM.GetRam()
+	e.DebugProps.Registers = e.vm.Registers
 }
 
 func (e *Emulator) Run() {
@@ -51,6 +66,9 @@ func NewEmulator() *Emulator {
 	emulator := &Emulator{
 		vm:     vm.NewVirtualMachine(beeper),
 		ticker: ticker,
+		DebugProps: &debugProps{
+			Instruction: make(chan emuconfig.Opcode),
+		},
 	}
 
 	emulator.vm.PC.SetToAddress(0x200)
@@ -88,10 +106,6 @@ func (e *Emulator) GetDisplayBits() emuconfig.Pixels {
 	return e.vm.Display.GetDisplay()
 }
 
-func (e *Emulator) GetMemory() *emuconfig.Ram {
-	return e.vm.RAM.GetRamPointer()
-}
-
 func (e *Emulator) PrintBlocking() {
 	for range e.ticker.C {
 		if e.vm.IsDrawing {
@@ -99,8 +113,4 @@ func (e *Emulator) PrintBlocking() {
 			e.vm.IsDrawing = false
 		}
 	}
-}
-
-func (e *Emulator) GetRegisters() [16]programregister.ProgramRegister {
-	return e.vm.Registers
 }

@@ -5,6 +5,6 @@ import (
 	"github.com/alperenbirol/chip-8/emuconfig"
 )
 
-func MemoryWidget(memory *emuconfig.Ram) *giu.MemoryEditorWidget {
+func MemoryWidget(memory emuconfig.Ram) *giu.MemoryEditorWidget {
 	return giu.MemoryEditor().Contents(memory[:])
 }

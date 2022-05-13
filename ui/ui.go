@@ -4,7 +4,9 @@ import (
 	"image/color"
 
 	g "github.com/AllenDang/giu"
+	"github.com/alperenbirol/chip-8/emuconfig"
 	"github.com/alperenbirol/chip-8/emulator"
+	"github.com/alperenbirol/chip-8/emulator/programregister"
 	"github.com/alperenbirol/chip-8/ui/displayconverter"
 	"github.com/alperenbirol/chip-8/ui/widgets"
 	"github.com/alperenbirol/chip-8/ui/widgets/debugwidgets"
@@ -14,10 +16,18 @@ import (
 var gui *GUI
 var ran = false
 
+type debug struct {
+	instructions []emuconfig.Opcode
+	memory       emuconfig.Ram
+	registers    [16]programregister.ProgramRegister
+}
+
 type GUI struct {
-	display     *g.Texture
-	emulator    *emulator.Emulator
+	display  *g.Texture
+	emulator *emulator.Emulator
+
 	isDebugging bool
+	debug
 }
 
 func loop() {
@@ -26,18 +36,24 @@ func loop() {
 	}
 	go gui.refreshDisplay()
 	if gui.isDebugging {
+		go gui.getDebugProps()
 		g.Window("Registers").Size(1650, 75).Pos(0, 0).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
-			debugwidgets.RegistersWidget(gui.emulator.GetRegisters()),
+			debugwidgets.RegistersWidget(gui.debug.registers),
 		)
-		g.Window("Memory").Size(435, 240).Pos(0, 75).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
-			debugwidgets.MemoryWidget(gui.emulator.GetMemory()),
+		g.Window("Memory").Size(435, 360).Pos(0, 75).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
+			debugwidgets.MemoryWidget(gui.debug.memory),
+		)
+		g.Window("Keypad").Size(250, 250).Pos(1090, 75).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
+			debugwidgets.KeypadWindow(),
+		)
+		g.Window("Instructions").Size(650, 310).Pos(1090, 325).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
+			debugwidgets.InstructionsWidget(gui.instructions),
 		)
 	}
 
-	g.Window("Display").Pos(435, 75).Size(345, 200).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoResize).Layout(
-		widgets.DisplayWidget(gui.display).Size(320, 160).BorderCol(color.White),
+	g.Window("Display").Pos(435, 75).Size(655, 360).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoResize | g.WindowFlagsNoMove).Layout(
+		widgets.DisplayWidget(gui.display).Size(640, 320).BorderCol(color.White),
 	)
-	// if in debug mode
 }
 
 func main() {
@@ -59,6 +75,18 @@ func (gui *GUI) refreshDisplay() {
 		})
 	}
 	ran = true
+}
+
+func (gui *GUI) getDebugProps() {
+	debug := gui.emulator.DebugProps
+	for {
+		lastInstruction := <-debug.Instruction
+		if len(gui.debug.instructions) == 0 || gui.debug.instructions[len(gui.debug.instructions)-1] != lastInstruction {
+			gui.debug.instructions = append(gui.debug.instructions, lastInstruction)
+		}
+		gui.debug.memory = debug.Memory
+		gui.debug.registers = debug.Registers
+	}
 }
 
 func setTextureFilter() error {
