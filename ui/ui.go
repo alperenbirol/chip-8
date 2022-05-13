@@ -37,21 +37,21 @@ func loop() {
 	go gui.refreshDisplay()
 	if gui.isDebugging {
 		go gui.getDebugProps()
-		g.Window("Registers").Size(1650, 75).Pos(0, 0).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
+		g.Window("Registers").Size(1650, 80).Pos(0, 0).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
 			debugwidgets.RegistersWidget(gui.debug.registers),
 		)
-		g.Window("Memory").Size(435, 360).Pos(0, 75).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
+		g.Window("Memory").Size(435, 360).Pos(0, 80).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
 			debugwidgets.MemoryWidget(gui.debug.memory),
 		)
-		g.Window("Keypad").Size(250, 250).Pos(1090, 75).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
+		g.Window("Keypad").Size(250, 250).Pos(1090, 80).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
 			debugwidgets.KeypadWindow(),
 		)
-		g.Window("Instructions").Size(650, 310).Pos(1090, 325).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
+		g.Window("Instructions").Size(650, 310).Pos(1090, 330).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
 			debugwidgets.InstructionsWidget(gui.instructions),
 		)
 	}
 
-	g.Window("Display").Pos(435, 75).Size(655, 360).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoResize | g.WindowFlagsNoMove).Layout(
+	g.Window("Display").Pos(435, 80).Size(655, 360).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoResize | g.WindowFlagsNoMove).Layout(
 		widgets.DisplayWidget(gui.display).Size(640, 320).BorderCol(color.White),
 	)
 }
