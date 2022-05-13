@@ -12,9 +12,9 @@ import (
 )
 
 type debugProps struct {
-	Instruction chan emuconfig.Opcode
-	Memory      emuconfig.Ram
-	Registers   [16]programregister.ProgramRegister
+	Instructions []emuconfig.Opcode
+	Memory       emuconfig.Ram
+	Registers    [16]programregister.ProgramRegister
 }
 
 type Emulator struct {
@@ -38,7 +38,9 @@ func (e *Emulator) instructionLoop() {
 }
 
 func (e *Emulator) setDebugProps(instruction emuconfig.Opcode) {
-	e.DebugProps.Instruction <- instruction
+	if len(e.DebugProps.Instructions) == 0 || e.DebugProps.Instructions[len(e.DebugProps.Instructions)-1] != instruction {
+		e.DebugProps.Instructions = append(e.DebugProps.Instructions, instruction)
+	}
 	e.DebugProps.Memory = e.vm.RAM.GetRam()
 	e.DebugProps.Registers = e.vm.Registers
 }
@@ -64,11 +66,9 @@ func NewEmulator() *Emulator {
 	ticker := time.NewTicker(emuconfig.TIMER_INTERVAL)
 
 	emulator := &Emulator{
-		vm:     vm.NewVirtualMachine(beeper),
-		ticker: ticker,
-		DebugProps: &debugProps{
-			Instruction: make(chan emuconfig.Opcode),
-		},
+		vm:         vm.NewVirtualMachine(beeper),
+		ticker:     ticker,
+		DebugProps: &debugProps{},
 	}
 
 	emulator.vm.PC.SetToAddress(0x200)

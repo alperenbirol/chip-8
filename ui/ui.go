@@ -4,9 +4,7 @@ import (
 	"image/color"
 
 	g "github.com/AllenDang/giu"
-	"github.com/alperenbirol/chip-8/emuconfig"
 	"github.com/alperenbirol/chip-8/emulator"
-	"github.com/alperenbirol/chip-8/emulator/programregister"
 	"github.com/alperenbirol/chip-8/ui/displayconverter"
 	"github.com/alperenbirol/chip-8/ui/widgets"
 	"github.com/alperenbirol/chip-8/ui/widgets/debugwidgets"
@@ -16,18 +14,11 @@ import (
 var gui *GUI
 var ran = false
 
-type debug struct {
-	instructions []emuconfig.Opcode
-	memory       emuconfig.Ram
-	registers    [16]programregister.ProgramRegister
-}
-
 type GUI struct {
 	display  *g.Texture
 	emulator *emulator.Emulator
 
 	isDebugging bool
-	debug
 }
 
 func loop() {
@@ -36,18 +27,17 @@ func loop() {
 	}
 	go gui.refreshDisplay()
 	if gui.isDebugging {
-		go gui.getDebugProps()
 		g.Window("Registers").Size(1650, 80).Pos(0, 0).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
-			debugwidgets.RegistersWidget(gui.debug.registers),
+			debugwidgets.RegistersWidget(gui.emulator.DebugProps.Registers),
 		)
 		g.Window("Memory").Size(435, 360).Pos(0, 80).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
-			debugwidgets.MemoryWidget(gui.debug.memory),
+			debugwidgets.MemoryWidget(gui.emulator.DebugProps.Memory),
 		)
 		g.Window("Keypad").Size(250, 250).Pos(1090, 80).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
 			debugwidgets.KeypadWindow(),
 		)
 		g.Window("Instructions").Size(650, 310).Pos(1090, 330).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
-			debugwidgets.InstructionsWidget(gui.instructions),
+			debugwidgets.InstructionsWidget(gui.emulator.DebugProps.Instructions),
 		)
 	}
 
@@ -75,18 +65,6 @@ func (gui *GUI) refreshDisplay() {
 		})
 	}
 	ran = true
-}
-
-func (gui *GUI) getDebugProps() {
-	debug := gui.emulator.DebugProps
-	for {
-		lastInstruction := <-debug.Instruction
-		if len(gui.debug.instructions) == 0 || gui.debug.instructions[len(gui.debug.instructions)-1] != lastInstruction {
-			gui.debug.instructions = append(gui.debug.instructions, lastInstruction)
-		}
-		gui.debug.memory = debug.Memory
-		gui.debug.registers = debug.Registers
-	}
 }
 
 func setTextureFilter() error {
