@@ -9,7 +9,7 @@ func InitGUI(mainLoop func(), flags ...g.MasterWindowFlags) {
 	for _, f := range flags {
 		flag |= f
 	}
-	wnd := g.NewMasterWindow("CHIP-8", 1650, 635, flag)
+	wnd := g.NewMasterWindow("CHIP-8", 1650, 650, flag)
 
 	wnd.Run(mainLoop)
 }

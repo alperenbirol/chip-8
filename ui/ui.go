@@ -36,7 +36,7 @@ func loop() {
 		g.Window("Keypad").Size(250, 250).Pos(1090, 80).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
 			debugwidgets.KeypadWindow(),
 		)
-		g.Window("Instructions").Size(650, 310).Pos(1090, 330).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
+		g.Window("Instructions").Size(560, 320).Pos(1090, 330).Flags(g.WindowFlagsNoCollapse | g.WindowFlagsNoInputs).Layout(
 			debugwidgets.InstructionsWidget(gui.emulator.DebugProps.Instructions),
 		)
 	}
