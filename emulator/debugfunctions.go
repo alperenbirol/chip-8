@@ -21,16 +21,17 @@ type EmulatorFunctions struct {
 }
 
 type DebugProps struct {
-	Instructions   []emuconfig.Opcode
-	Memory         *emuconfig.Ram
-	Registers      *[16]programregister.ProgramRegister
-	IndexRegister  *indexregister.IndexRegister
-	ProgramCounter *uint16
-	DelayTimerTime *byte
-	SoundTimerTime *byte
-	IsDrawing      *bool
-	Paused         *bool
-	Functions      *EmulatorFunctions
+	Instructions    []emuconfig.Opcode
+	Memory          *emuconfig.Ram
+	Registers       *[16]programregister.ProgramRegister
+	IndexRegister   *indexregister.IndexRegister
+	ProgramCounter  *uint16
+	DelayTimerTime  *byte
+	SoundTimerTime  *byte
+	IsDrawing       *bool
+	Paused          *bool
+	Functions       *EmulatorFunctions
+	KeypadFunctions *KeypressFunctions
 }
 
 func (e *Emulator) setDebugProps() {
@@ -55,6 +56,7 @@ func (e *Emulator) setDebugFunctions() {
 		Step:          e.instructionStep,
 		SetClockSpeed: e.SetClockSpeed,
 	}
+	e.DebugProps.KeypadFunctions = e.KeypressFunctions()
 }
 
 func (e *Emulator) Reset() {

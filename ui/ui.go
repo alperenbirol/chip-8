@@ -48,7 +48,7 @@ func (gui *GUI) loop() {
 			debugwidgets.MemoryWidget(gui.debugProps.Memory),
 		)
 		g.Window("Keypad").Size(250, 250).Pos(1090, 80).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
-			debugwidgets.KeypadWindow(),
+			debugwidgets.KeypadWindow(gui.debugProps.KeypadFunctions),
 		)
 		g.Window("Window").Size(200, 200).Pos(1340, 80).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
 			g.Label("a"),

@@ -4,13 +4,13 @@ import "errors"
 
 var errStackEmpty = errors.New("stack is empty")
 
-type stack []uint16
+type Stack []uint16
 
-func NewStack() *stack {
-	return &stack{}
+func NewStack() *Stack {
+	return &Stack{}
 }
 
-func (s *stack) Pop() (uint16, error) {
+func (s *Stack) Pop() (uint16, error) {
 	if len(*s) == 0 {
 		return 0, errStackEmpty
 	}
@@ -19,6 +19,6 @@ func (s *stack) Pop() (uint16, error) {
 	return v, nil
 }
 
-func (s *stack) Push(v uint16) {
+func (s *Stack) Push(v uint16) {
 	*s = append(*s, v)
 }

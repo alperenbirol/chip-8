@@ -16,6 +16,7 @@ type IMemory interface {
 	FetchByte(address emuconfig.Address) byte
 	FetchBytes(address emuconfig.Address, length uint16) []byte
 	GetRamPointer() *emuconfig.Ram
+	StoreBytesAtAddress(address emuconfig.Address, data byte)
 }
 
 func NewMemory() IMemory {
@@ -56,4 +57,8 @@ func (m *Memory) FetchBytes(address emuconfig.Address, length uint16) []byte {
 
 func (m *Memory) GetRamPointer() *emuconfig.Ram {
 	return &m.Ram
+}
+
+func (m *Memory) StoreBytesAtAddress(address emuconfig.Address, data byte) {
+	m.Ram[address] = data
 }

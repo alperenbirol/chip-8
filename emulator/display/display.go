@@ -23,11 +23,11 @@ func NewDisplay() IDisplay {
 }
 
 func (d *Display) setPixel(x, y byte, value emuconfig.Pixel) {
-	d.pixels[y][x] = value
+	d.pixels[y%emuconfig.DISPLAY_HEIGHT][x%emuconfig.DISPLAY_WIDTH] = value
 }
 
 func (d *Display) getPixel(x, y byte) emuconfig.Pixel {
-	return d.pixels[y][x]
+	return d.pixels[y%emuconfig.DISPLAY_HEIGHT][x%emuconfig.DISPLAY_WIDTH]
 }
 
 func (d *Display) Clear() {
@@ -51,7 +51,7 @@ func (d *Display) Draw(x, y byte, sprite []byte) bool {
 					d.setPixel(x+byte(j), y+byte(i), emuconfig.PIXEL_ON)
 				}
 			} else {
-				d.setPixel(x+byte(j)%64, y+byte(i)%32, emuconfig.PIXEL_OFF)
+				d.setPixel(x+byte(j), y+byte(i), emuconfig.PIXEL_OFF)
 			}
 		}
 	}

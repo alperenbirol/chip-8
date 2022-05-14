@@ -13,3 +13,10 @@ func Jump(address emuconfig.Address) Instruction {
 		vm.PC.Decrement()
 	}
 }
+
+func JumpToAddressPlusRegister(address uint16) Instruction {
+	return func(vm *vm.VirtualMachine) {
+		address += uint16(vm.Registers[0].Get())
+		vm.PC.SetToAddress(emuconfig.Address(address))
+	}
+}

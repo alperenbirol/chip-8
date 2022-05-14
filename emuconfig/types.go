@@ -24,3 +24,8 @@ type Ram [RAM_SIZE]byte
 type Pixel bool
 
 type Pixels [DISPLAY_HEIGHT][DISPLAY_WIDTH]Pixel
+
+type Key struct {
+	KeyCode byte
+	Pressed bool
+}
