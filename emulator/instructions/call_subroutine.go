@@ -9,5 +9,6 @@ func CallSubroutine(address emuconfig.Address) Instruction {
 	return func(vm *vm.VirtualMachine) {
 		vm.Stack.Push(uint16(vm.PC.Get()))
 		vm.PC.SetToAddress(address)
+		vm.PC.Decrement()
 	}
 }

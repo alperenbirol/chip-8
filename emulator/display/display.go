@@ -23,11 +23,11 @@ func NewDisplay() IDisplay {
 }
 
 func (d *Display) setPixel(x, y byte, value emuconfig.Pixel) {
-	d.pixels[y%emuconfig.DISPLAY_HEIGHT][x%emuconfig.DISPLAY_WIDTH] = value
+	d.pixels[y][x] = value
 }
 
 func (d *Display) getPixel(x, y byte) emuconfig.Pixel {
-	return d.pixels[y%emuconfig.DISPLAY_HEIGHT][x%emuconfig.DISPLAY_WIDTH]
+	return d.pixels[y][x]
 }
 
 func (d *Display) Clear() {
@@ -39,19 +39,28 @@ func (d *Display) Clear() {
 }
 
 func (d *Display) Draw(x, y byte, sprite []byte) bool {
+	x %= emuconfig.DISPLAY_WIDTH
+	y %= emuconfig.DISPLAY_HEIGHT
+
 	isOverlap := false
-	for i := 0; i < len(sprite); i++ {
+	for i := byte(0); i < byte(len(sprite)); i++ {
+		if y+i >= emuconfig.DISPLAY_HEIGHT {
+			continue
+		}
 		binary := fmt.Sprintf("%08b", sprite[i])
-		for j := 0; j < 8; j++ {
+		for j := byte(0); j < 8; j++ {
+			if x+j >= emuconfig.DISPLAY_WIDTH {
+				break
+			}
 			if binary[j] == '1' {
-				if d.getPixel(x+byte(j), y+byte(i)) == emuconfig.PIXEL_ON {
+				if d.getPixel(x+j, y+i) == emuconfig.PIXEL_ON {
 					isOverlap = true
-					d.setPixel(x+byte(j), y+byte(i), emuconfig.PIXEL_OFF)
+					d.setPixel(x+j, y+i, emuconfig.PIXEL_OFF)
 				} else {
-					d.setPixel(x+byte(j), y+byte(i), emuconfig.PIXEL_ON)
+					d.setPixel(x+j, y+i, emuconfig.PIXEL_ON)
 				}
 			} else {
-				d.setPixel(x+byte(j), y+byte(i), emuconfig.PIXEL_OFF)
+				d.setPixel(x+j, y+i, emuconfig.PIXEL_OFF)
 			}
 		}
 	}
