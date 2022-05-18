@@ -93,20 +93,25 @@ func Description(opcode *emuconfig.Opcode) string {
 		return fmt.Sprintf("Draw sprite at (%d,%d) with %d bytes", x, y, n)
 	case 0xE:
 		NN := byte(nibbles[2]<<4 | nibbles[3])
+		if NN == 0x9E {
+			return fmt.Sprintf("Skip next instruction if key in register v%x is pressed", nibbles[1])
+		}
 		if NN == 0xA1 {
-			return fmt.Sprintf("Skip next instruction if key 0x%x is not pressed", nibbles[1])
+			return fmt.Sprintf("Skip next instruction if key in register v%x is not pressed", nibbles[1])
 		}
 	case 0xF:
 		NN := uint16(nibbles[2])<<4 | uint16(nibbles[3])
 		switch NN {
-		case 0x1E:
-			return fmt.Sprintf("Add register v%x to index register", nibbles[1])
 		case 0x07:
 			return "Set register vx to delay timer value"
+		case 0x0A:
+			return fmt.Sprintf("Wait for keypress, store key in register v%x", nibbles[1])
 		case 0x15:
 			return fmt.Sprintf("Set delay timer to value of register v%x", nibbles[1])
 		case 0x18:
 			return fmt.Sprintf("Set sound timer to value of register v%x", nibbles[1])
+		case 0x1E:
+			return fmt.Sprintf("Add register v%x to index register", nibbles[1])
 		case 0x29:
 			return fmt.Sprintf("Set index register to address of font in v%x", nibbles[1])
 		case 0x33:

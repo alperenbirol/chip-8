@@ -30,5 +30,6 @@ func main() {
 			RomPath: &romPath,
 		},
 	})
+
 	gui.Run()
 }

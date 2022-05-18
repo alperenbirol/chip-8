@@ -1,5 +1,7 @@
 package emulator
 
+import "github.com/alperenbirol/chip-8/emuconfig"
+
 type KeypressFunctions struct {
 	KEY_0_PRESSED func()
 	KEY_1_PRESSED func()
@@ -22,52 +24,52 @@ type KeypressFunctions struct {
 func (e *Emulator) KeypressFunctions() *KeypressFunctions {
 	return &KeypressFunctions{
 		KEY_0_PRESSED: func() {
-			e.vm.Keypad.PressKey(0x0)
+			e.vm.Keypad.PressAndReleaseDebugKey(0x0, emuconfig.DEBUG_KEY_PRESS_DURATION)
 		},
 		KEY_1_PRESSED: func() {
-			e.vm.Keypad.PressKey(0x1)
+			e.vm.Keypad.PressAndReleaseDebugKey(0x1, emuconfig.DEBUG_KEY_PRESS_DURATION)
 		},
 		KEY_2_PRESSED: func() {
-			e.vm.Keypad.PressKey(0x2)
+			e.vm.Keypad.PressAndReleaseDebugKey(0x2, emuconfig.DEBUG_KEY_PRESS_DURATION)
 		},
 		KEY_3_PRESSED: func() {
-			e.vm.Keypad.PressKey(0x3)
+			e.vm.Keypad.PressAndReleaseDebugKey(0x3, emuconfig.DEBUG_KEY_PRESS_DURATION)
 		},
 		KEY_4_PRESSED: func() {
-			e.vm.Keypad.PressKey(0x4)
+			e.vm.Keypad.PressAndReleaseDebugKey(0x4, emuconfig.DEBUG_KEY_PRESS_DURATION)
 		},
 		KEY_5_PRESSED: func() {
-			e.vm.Keypad.PressKey(0x5)
+			e.vm.Keypad.PressAndReleaseDebugKey(0x5, emuconfig.DEBUG_KEY_PRESS_DURATION)
 		},
 		KEY_6_PRESSED: func() {
-			e.vm.Keypad.PressKey(0x6)
+			e.vm.Keypad.PressAndReleaseDebugKey(0x6, emuconfig.DEBUG_KEY_PRESS_DURATION)
 		},
 		KEY_7_PRESSED: func() {
-			e.vm.Keypad.PressKey(0x7)
+			e.vm.Keypad.PressAndReleaseDebugKey(0x7, emuconfig.DEBUG_KEY_PRESS_DURATION)
 		},
 		KEY_8_PRESSED: func() {
-			e.vm.Keypad.PressKey(0x8)
+			e.vm.Keypad.PressAndReleaseDebugKey(0x8, emuconfig.DEBUG_KEY_PRESS_DURATION)
 		},
 		KEY_9_PRESSED: func() {
-			e.vm.Keypad.PressKey(0x9)
+			e.vm.Keypad.PressAndReleaseDebugKey(0x9, emuconfig.DEBUG_KEY_PRESS_DURATION)
 		},
 		KEY_A_PRESSED: func() {
-			e.vm.Keypad.PressKey(0xA)
+			e.vm.Keypad.PressAndReleaseDebugKey(0xA, emuconfig.DEBUG_KEY_PRESS_DURATION)
 		},
 		KEY_B_PRESSED: func() {
-			e.vm.Keypad.PressKey(0xB)
+			e.vm.Keypad.PressAndReleaseDebugKey(0xB, emuconfig.DEBUG_KEY_PRESS_DURATION)
 		},
 		KEY_C_PRESSED: func() {
-			e.vm.Keypad.PressKey(0xC)
+			e.vm.Keypad.PressAndReleaseDebugKey(0xC, emuconfig.DEBUG_KEY_PRESS_DURATION)
 		},
 		KEY_D_PRESSED: func() {
-			e.vm.Keypad.PressKey(0xD)
+			e.vm.Keypad.PressAndReleaseDebugKey(0xD, emuconfig.DEBUG_KEY_PRESS_DURATION)
 		},
 		KEY_E_PRESSED: func() {
-			e.vm.Keypad.PressKey(0xE)
+			e.vm.Keypad.PressAndReleaseDebugKey(0xE, emuconfig.DEBUG_KEY_PRESS_DURATION)
 		},
 		KEY_F_PRESSED: func() {
-			e.vm.Keypad.PressKey(0xF)
+			e.vm.Keypad.PressAndReleaseDebugKey(0xF, emuconfig.DEBUG_KEY_PRESS_DURATION)
 		},
 	}
 }

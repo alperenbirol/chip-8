@@ -1,6 +1,8 @@
 package keypad
 
 import (
+	"time"
+
 	"github.com/alperenbirol/chip-8/emuconfig"
 )
 
@@ -38,4 +40,21 @@ func (keypad *Keypad) PressKey(keyIndex byte) {
 
 func (keypad *Keypad) ReleaseKey(keyIndex byte) {
 	keypad[keyIndex].Pressed = false
+}
+
+func (keypad *Keypad) AnyKeysPressed() (bool, byte) {
+	for _, key := range keypad {
+		if key.Pressed {
+			return true, key.KeyCode
+		}
+	}
+	return false, 0
+}
+
+func (keypad *Keypad) PressAndReleaseDebugKey(keyIndex byte, releaseDelay uint) {
+	keypad.PressKey(keyIndex)
+	go func(keyIndex byte, releaseDelay uint) {
+		time.Sleep(time.Duration(releaseDelay) * time.Millisecond)
+		keypad.ReleaseKey(keyIndex)
+	}(keyIndex, releaseDelay)
 }

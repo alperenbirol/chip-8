@@ -100,20 +100,25 @@ func Decode(code *emuconfig.Opcode) instructions.Instruction {
 		return instructions.Display(x, y, n)
 	case 0xE:
 		NN := byte(nibbles[2]<<4 | nibbles[3])
+		if NN == 0x9E {
+			return instructions.SkipIfKeyPressed(nibbles[1])
+		}
 		if NN == 0xA1 {
 			return instructions.SkipIfKeyNotPressed(nibbles[1])
 		}
 	case 0xF:
 		NN := uint16(nibbles[2])<<4 | uint16(nibbles[3])
 		switch NN {
-		case 0x1E:
-			return instructions.AddToIndexRegister(nibbles[1])
 		case 0x07:
 			return instructions.SetRegisterToDelayTimer(nibbles[1])
+		case 0x0A:
+			return instructions.WaitForKeyPress(nibbles[1])
 		case 0x15:
 			return instructions.SetDelayTimer(nibbles[1])
 		case 0x18:
 			return instructions.SetSoundTimer(nibbles[1])
+		case 0x1E:
+			return instructions.AddToIndexRegister(nibbles[1])
 		case 0x29:
 			return instructions.SetIndexRegisterToFont(nibbles[1])
 		case 0x33:

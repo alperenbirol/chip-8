@@ -40,6 +40,7 @@ func (gui *GUI) loop() {
 		gui.setTextureFilter()
 	}
 	go gui.refreshDisplay()
+	gui.readKeyInputs()
 	if gui.isDebugging {
 		g.Window("Registers").Size(1650, 80).Pos(0, 0).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
 			debugwidgets.RegistersWidget(gui.debugProps.Registers),
@@ -85,6 +86,12 @@ func (gui *GUI) refreshDisplay() {
 	g.NewTextureFromRgba(displayconverter.Convert(gui.debugProps.Functions.GetDisplay()), func(t *g.Texture) {
 		gui.display = t
 	})
+}
+
+func (gui *GUI) readKeyInputs() {
+	for userKey, emuKey := range emuconfig.USER_KEYPAD_INTERFACE {
+		gui.debugProps.Functions.SetKey(emuKey, g.IsKeyPressed(userKey))
+	}
 }
 
 func (gui *GUI) setTextureFilter() error {

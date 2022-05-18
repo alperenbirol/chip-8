@@ -16,8 +16,8 @@ type EmulatorFunctions struct {
 	Resume        func()
 	SetClockSpeed func(uint)
 	Step          func()
-
-	GetDisplay func() emuconfig.Pixels
+	SetKey        func(emuconfig.Key, bool)
+	GetDisplay    func() emuconfig.Pixels
 }
 
 type DebugProps struct {
@@ -55,6 +55,7 @@ func (e *Emulator) setDebugFunctions() {
 		Resume:        e.Resume,
 		Step:          e.instructionStep,
 		SetClockSpeed: e.SetClockSpeed,
+		SetKey:        e.SetKey,
 	}
 	e.DebugProps.KeypadFunctions = e.KeypressFunctions()
 }
@@ -85,6 +86,14 @@ func (e *Emulator) Pause() {
 
 func (e *Emulator) Resume() {
 	e.paused = false
+}
+
+func (e *Emulator) SetKey(key emuconfig.Key, pressed bool) {
+	if pressed {
+		e.vm.Keypad.PressKey(key.KeyCode)
+	} else {
+		e.vm.Keypad.ReleaseKey(key.KeyCode)
+	}
 }
 
 func (e *Emulator) SetClockSpeed(frequency uint) {
