@@ -37,7 +37,7 @@ func (e *Emulator) instructionLoop() {
 }
 
 func (e *Emulator) Run() {
-	e.paused = false
+	e.paused = true
 	go e.instructionLoop()
 }
 

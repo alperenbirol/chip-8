@@ -17,7 +17,7 @@ func main() {
 	romPath := "./roms/ibm.ch8"
 
 	emulator := emulator.NewEmulator(beeper)
-	emulator.LoadROM(romPath)
+	// emulator.LoadROM(romPath)
 	emulator.Run()
 
 	var freq int32 = emuconfig.TIMER_FREQUENCY

@@ -51,8 +51,8 @@ func (gui *GUI) loop() {
 		g.Window("Keypad").Size(250, 250).Pos(1090, 80).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
 			debugwidgets.KeypadWindow(gui.debugProps.KeypadFunctions),
 		)
-		g.Window("Window").Size(200, 200).Pos(1340, 80).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
-			g.Label("a"),
+		g.Window("Stack").Size(200, 200).Pos(1340, 80).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
+			debugwidgets.StackWidget(gui.debugProps.Stack),
 		)
 		g.Window("Instructions").Size(560, 320).Pos(1090, 330).Flags(emuconfig.DEBUG_WIDGET_FLAGS).Layout(
 			debugwidgets.InstructionsWidget(gui.debugProps.Instructions),

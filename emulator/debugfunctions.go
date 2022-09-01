@@ -6,6 +6,7 @@ import (
 	"github.com/alperenbirol/chip-8/emuconfig"
 	"github.com/alperenbirol/chip-8/emulator/indexregister"
 	"github.com/alperenbirol/chip-8/emulator/programregister"
+	"github.com/alperenbirol/chip-8/emulator/stack"
 )
 
 type EmulatorFunctions struct {
@@ -25,6 +26,7 @@ type DebugProps struct {
 	Memory          *emuconfig.Ram
 	Registers       *[16]programregister.ProgramRegister
 	IndexRegister   *indexregister.IndexRegister
+	Stack           *stack.Stack
 	ProgramCounter  *uint16
 	DelayTimerTime  *byte
 	SoundTimerTime  *byte
@@ -39,6 +41,7 @@ func (e *Emulator) setDebugProps() {
 	e.DebugProps.Memory = e.vm.RAM.GetRamPointer()
 	e.DebugProps.Registers = &e.vm.Registers
 	e.DebugProps.IndexRegister = &e.vm.IndexRegister
+	e.DebugProps.Stack = e.vm.Stack
 	e.DebugProps.IsDrawing = &e.vm.IsDrawing
 	e.DebugProps.ProgramCounter = e.vm.PC.GetPointer()
 	e.DebugProps.DelayTimerTime = e.vm.DelayTimer.GetRemainingTimePointer()
